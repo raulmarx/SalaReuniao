@@ -1,0 +1,20 @@
+# Use a imagem base do Node.js
+FROM node:18-alpine
+
+# Definir o diretório de trabalho dentro do contêiner
+WORKDIR /var/www/frontend
+
+# Copiar o arquivo package.json e package-lock.json (se houver)
+COPY ./frontend/package*.json ./
+
+# Instalar dependências
+RUN npm install
+
+# Copiar o restante dos arquivos do frontend para o contêiner
+COPY ./frontend .
+
+# Expor a porta onde a aplicação React.js irá rodar
+EXPOSE 3000
+
+# Comando para rodar a aplicação em modo desenvolvimento
+CMD ["npm", "run", "dev"]

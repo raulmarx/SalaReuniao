@@ -1,0 +1,88 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: ./
+      dockerfile: docker/php/DockerFile
+    container_name: app
+    restart: always
+    working_dir: /var/www/
+    volumes:
+      - ./:/var/www
+      - ./application:/var/www/application
+    environment:
+      - COMPOSER_HOME=/composer
+      - COMPOSER_ALLOW_SUPERUSER=1
+      - APP_ENV=local
+      - APP_KEY=base64:MxLbz4Hrf4KiyzYFd4Gy1yYeZmW7/iWBpw07mOZiyII=
+    depends_on:
+      - db
+      - redis
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:1.25.2-alpine
+    container_name: nginx
+    restart: always
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www
+      - ./application:/var/www/application
+      - ./docker/nginx:/etc/nginx/conf.d
+    networks:
+      - app-network
+
+  redis:
+    image: redis:7.0.12-alpine
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis:/data
+    networks:
+      - app-network
+
+  db:
+    image: postgres:latest
+    container_name: db
+    restart: always
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  node:
+    build:
+      context: ./
+      dockerfile: docker/node/DockerFile
+    container_name: node
+    working_dir: /var/www/frontend
+    volumes:
+      - ./:/var/www
+      - ./frontend:/var/www/frontend
+    ports:
+      - "3000:3000"
+    command: sh -c "npm install && npm start"
+    networks:
+      - app-network
+    depends_on:
+      - db
+      - redis
+
+volumes:
+  redis:
+  db:
+
+networks:
+  app-network:
+    driver: bridge
