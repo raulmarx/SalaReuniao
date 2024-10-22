@@ -19,6 +19,7 @@ class ReserveResource extends JsonResource
             'responsible' => $this->responsible,
             'start_reservation' => $this->start_reservation,
             'end_reservation' => $this->end_reservation,
+            'status' => $this->status,
             'user_id' => $this->user_id,
             'room' => new RoomResource($this->room), 
         ];

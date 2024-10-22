@@ -18,8 +18,11 @@ class Reserve extends Model
         'start_reservation',
         'end_reservation',
         'room_id',
+        'status'
     ];
 
+    protected $dates = ['deleted_at'];
+    
     public function room()
     {
         return $this->belongsTo(Room::class);

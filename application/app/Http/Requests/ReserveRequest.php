@@ -25,7 +25,7 @@ class ReserveRequest extends FormRequest
         $rules = [
             'room_id' => 'required|exists:rooms,id',
             'responsible' => 'required|string|max:255',
-            'start_reservation' => 'required|date|after:now',
+            'start_reservation' => 'required|date',
             'end_reservation' => 'required|date|after:start_reservation',
         ];
 
@@ -49,7 +49,6 @@ class ReserveRequest extends FormRequest
             'room_id.exists' => 'A sala selecionada não existe.',
             'responsible.required' => 'O nome do responsável é obrigatório.',
             'start_reservation.required' => 'A data e hora de início são obrigatórias.',
-            'start_reservation.after' => 'A data e hora de início devem ser futuras.',
             'end_reservation.required' => 'A data e hora de término são obrigatórias.',
             'end_reservation.after' => 'A data e hora de término devem ser após a data de início.',
         ];

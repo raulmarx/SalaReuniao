@@ -112,33 +112,43 @@ const RoomsPage = () => {
                 </button>
             </div>
             {rooms.length > 0 ? (
-                <ul className="bg-white rounded-lg shadow-md divide-y divide-gray-200">
-                    {rooms.map((room) => (
-                        <li key={room.id} className="flex justify-between items-center p-4 hover:bg-gray-100">
-                            <span className="font-semibold">{room.name}</span>
-                            <div>
-                                <button
-                                    onClick={() => handleOpenModal(room.id)} 
-                                    className="bg-blue-500 text-white py-1 px-2 rounded hover:bg-blue-600 transition duration-200"
-                                >
-                                    Nova Reserva
-                                </button>
-                                <button
-                                    onClick={() => handleEditRoom(room)}
-                                    className="bg-yellow-500 text-white py-1 px-2 rounded mr-2 hover:bg-yellow-600 transition duration-200"
-                                >
-                                    Editar
-                                </button>
-                                <button
-                                    onClick={() => handleDeleteRoom(room.id)}
-                                    className="bg-red-500 text-white py-1 px-2 rounded hover:bg-red-600 transition duration-200"
-                                >
-                                    Excluir
-                                </button>
-                            </div>
-                        </li>
-                    ))}
-                </ul>
+                <table className="min-w-full bg-white rounded-lg shadow-md divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                        <tr>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome da Sala</th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                        {rooms.map((room) => (
+                            <tr key={room.id} className="hover:bg-gray-100">
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <div className="text-sm font-medium text-gray-900">{room.name}</div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <button
+                                        onClick={() => handleOpenModal(room.id)} 
+                                        className="bg-blue-500 text-white py-1 px-2 rounded hover:bg-blue-600 transition duration-200"
+                                    >
+                                        Nova Reserva
+                                    </button>
+                                    <button
+                                        onClick={() => handleEditRoom(room)}
+                                        className="bg-yellow-500 text-white py-1 px-2 rounded ml-2 hover:bg-yellow-600 transition duration-200"
+                                    >
+                                        Editar
+                                    </button>
+                                    <button
+                                        onClick={() => handleDeleteRoom(room.id)}
+                                        className="bg-red-500 text-white py-1 px-2 rounded ml-2 hover:bg-red-600 transition duration-200"
+                                    >
+                                        Excluir
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             ) : (
                 <p>Não há salas disponíveis.</p>
             )}

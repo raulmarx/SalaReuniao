@@ -21,7 +21,7 @@ class ReserveController extends Controller
 
     public function index()
     {
-        $reserves = $this->reserveRepository->all()->where('user_id', Auth::id());
+        $reserves = $this->reserveRepository->all()->where('user_id', Auth::id())->whereNotIn('status', ['disponivel']);
         return ReserveResource::collection($reserves);
     }
 
@@ -32,10 +32,14 @@ class ReserveController extends Controller
             return response()->json(['error' => 'Você não pode reserver sua própria room.'], 403);
         }
 
+        if ($request->start_reservation < now()) {
+            return response()->json(['error' => 'A data e hora de início da reserva devem ser futuras.'], 400);
+        }
+
         $conflito = Reserve::where('room_id', $request->room_id)
             ->where(function ($query) use ($request) {
                 $query->whereBetween('start_reservation', [$request->start_reservation, $request->end_reservation])
-                      ->orWhereBetween('end_reservation', [$request->start_reservation, $request->end_reservation]);
+                    ->orWhereBetween('end_reservation', [$request->start_reservation, $request->end_reservation]);
             })
             ->exists();
 
@@ -49,6 +53,7 @@ class ReserveController extends Controller
             'responsible' => $request->responsible,
             'start_reservation' => $request->start_reservation,
             'end_reservation' => $request->end_reservation,
+            'status' => 'reservado',
         ];
 
         $reserve = $this->reserveRepository->create($data);
@@ -71,11 +76,12 @@ class ReserveController extends Controller
     {
         $reserve = $this->reserveRepository->find($id);
 
-        if (Auth::id() !== $reserve->user_id) {
-            return response()->json(['error' => 'Você só pode cancelar suas próprias reserves.'], 403);
+        if ($reserve->status === 'cancelado') {
+            return response()->json(['error' => 'A reserva já está cancelada.'], 400);
         }
 
-        $this->reserveRepository->delete($reserve);
-        return response()->json(null, 204);
+        $this->reserveRepository->update($reserve, ['status' => 'cancelado']);
+
+        return response()->json(['message' => 'Reserva cancelada com sucesso.'], 200);
     }
 }

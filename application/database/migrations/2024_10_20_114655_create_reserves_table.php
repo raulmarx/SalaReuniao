@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('responsible');
             $table->dateTime('start_reservation');
             $table->dateTime('end_reservation');
+            $table->enum('status', ['disponivel', 'reservado', 'cancelado'])->default('disponivel');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

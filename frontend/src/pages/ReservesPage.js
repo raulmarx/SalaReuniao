@@ -4,10 +4,10 @@ import { getReserves, createReserve, updateReserve, deleteReserve } from '../ser
 const ReservesPage = () => {
     const [reserves, setReserves] = useState([]);
     const [error, setError] = useState(null);
-    const [newReserve, setNewReserve] = useState({ room_id: '', start_time: '', end_time: '' });
+    const [newReserve, setNewReserve] = useState({ name: '', responsible: '', start_reservation: '', end_reservation: '' });
     const [editReserveId, setEditReserveId] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false); 
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         let isMounted = true;
@@ -32,38 +32,24 @@ const ReservesPage = () => {
         };
     }, []);
 
-    const handleOpenModal = () => {
-        setNewReserve({ room_id: '', start_time: '', end_time: '' }); 
-        setIsEditing(false);
-        setIsModalOpen(true);
-    };
 
     const handleCreateOrUpdateReserve = async () => {
-        if (isEditing) {
-            try {
-                const response = await updateReserve(editReserveId, newReserve);
-                setReserves((prevReserves) =>
-                    prevReserves.map((reserve) => (reserve.id === editReserveId ? response.data.data : reserve))
-                );
-            } catch (error) {
-                setError(error.message);
-            }
-        } else {
-            try {
-                const response = await createReserve(newReserve);
-                setReserves((prevReserves) => [...prevReserves, response.data.data]);
-            } catch (error) {
-                setError(error.message);
-            }
+        try {
+            const response = await updateReserve(editReserveId, newReserve);
+            setReserves((prevReserves) =>
+                prevReserves.map((reserve) => (reserve.id === editReserveId ? response.data.data : reserve))
+            );
+        } catch (error) {
+            setError(error.message);
         }
 
         setIsModalOpen(false);
-        setEditReserveId(null); 
+        setEditReserveId(null);
     };
 
     const handleEditReserve = (reserve) => {
         setEditReserveId(reserve.id);
-        setNewReserve({ room_id: reserve.room_id, start_time: reserve.start_time, end_time: reserve.end_time });
+        setNewReserve({ room_id: reserve.room.id, responsible: reserve.responsible, start_reservation: reserve.start_reservation, end_reservation: reserve.end_reservation });
         setIsEditing(true);
         setIsModalOpen(true);
     };
@@ -79,43 +65,40 @@ const ReservesPage = () => {
 
 
     return (
-        <div className="container mx-auto p-4">
+        <div className="container mx-auto p-4 ">
             <h1 className="text-2xl font-bold mb-4">Reservas</h1>
             {error && <div className="text-red-500">{error}</div>}
 
             {reserves.length > 0 ? (
-                <ul className="bg-white rounded-lg shadow-md divide-y divide-gray-200">
-                    {reserves.map((reserve) => (
-                        <li key={reserve.id} className="flex justify-between items-center p-4 hover:bg-gray-100">
-                            <span className="font-semibold">{`Sala ID: ${reserve.room_id}, Início: ${reserve.start_time}, Fim: ${reserve.end_time}`}</span>
-                            <div className="flex items-center">
-                                <button
-                                    onClick={handleOpenModal}
-                                    className="bg-blue-500 text-white py-1 px-2 rounded hover:bg-blue-600 transition duration-200"
-                                >
-                                    Nova Reserva
-                                </button>
-                                <button
-                                    onClick={() => handleEditReserve(reserve)}
-                                    className="bg-yellow-500 text-white py-1 px-2 rounded mr-2 hover:bg-yellow-600 transition duration-200"
-                                >
-                                    Editar
-                                </button>
-                                <button
-                                    onClick={() => handleDeleteReserve(reserve.id)}
-                                    className="bg-red-500 text-white py-1 px-2 rounded mr-2 hover:bg-red-600 transition duration-200"
-                                >
-                                    Cancelar
-                                </button>
-
-
-
-                            </div>
-                        </li>
-                    ))}
-                </ul>
+                <table className="min-w-full bg-white rounded-lg shadow-md divide-y divide-gray-200">
+                    <thead className="bg-gray-100">
+                        <tr>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sala</th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Responsável</th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Início</th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fim</th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                        {reserves.map((reserve) => (
+                            <tr key={reserve.id} className={`hover:bg-gray-100 border-b border-gray-300 ${reserve.status === 'cancelado' ? 'opacity-50 pointer-events-none' : ''}`}>
+                                <td className="px-6 py-4 whitespace-nowrap">{reserve.room.name}</td>
+                                <td className="px-6 py-4 whitespace-nowrap">{reserve.responsible}</td>
+                                <td className="px-6 py-4 whitespace-nowrap">{reserve.start_reservation}</td>
+                                <td className="px-6 py-4 whitespace-nowrap">{reserve.end_reservation}</td>
+                                <td className="px-6 py-4 whitespace-nowrap">{reserve.status}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <button onClick={() => handleEditReserve(reserve)} className="bg-yellow-500 text-white py-1 px-2 rounded ml-2 hover:bg-yellow-600 transition duration-200" disabled={reserve.status === 'cancelado'}>Editar</button>
+                                    <button onClick={() => handleDeleteReserve(reserve.id)} className="bg-red-500 text-white py-1 px-2 rounded ml-2 hover:bg-red-600 transition duration-200" disabled={reserve.status === 'cancelado'}>Cancelar</button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             ) : (
-                <p>Não há reservas disponíveis.</p>
+                <p className="text-center">N&atilde;o h&aacute; reservas dispon&iacute;veis.</p>
             )}
 
             {isModalOpen && (
@@ -124,22 +107,22 @@ const ReservesPage = () => {
                         <h2 className="text-xl font-bold mb-4">{isEditing ? 'Editar Reserva' : 'Nova Reserva'}</h2>
                         <input
                             type="text"
-                            value={newReserve.room_id}
-                            onChange={(e) => setNewReserve({ ...newReserve, room_id: e.target.value })}
-                            placeholder="ID da sala"
+                            value={newReserve.responsible}
+                            onChange={(e) => setNewReserve({ ...newReserve, responsible: e.target.value })}
+                            placeholder="Responsavel"
                             className="border border-gray-300 rounded p-2 w-full mb-2"
                         />
                         <input
                             type="datetime-local"
-                            value={newReserve.start_time}
-                            onChange={(e) => setNewReserve({ ...newReserve, start_time: e.target.value })}
+                            value={newReserve.start_reservation}
+                            onChange={(e) => setNewReserve({ ...newReserve, start_reservation: e.target.value })}
                             placeholder="Data e Hora de Início"
                             className="border border-gray-300 rounded p-2 w-full mb-2"
                         />
                         <input
                             type="datetime-local"
-                            value={newReserve.end_time}
-                            onChange={(e) => setNewReserve({ ...newReserve, end_time: e.target.value })}
+                            value={newReserve.end_reservation}
+                            onChange={(e) => setNewReserve({ ...newReserve, end_reservation: e.target.value })}
                             placeholder="Data e Hora de Término"
                             className="border border-gray-300 rounded p-2 w-full mb-2"
                         />
