@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,17 +13,9 @@ use Illuminate\Support\Facades\Validator;
 
 class UsersController extends Controller
 {
-    public function register(Request $request)
+    public function register(UserRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
+        $request->validate();
 
         $user = User::create([
             'name' => $request->name,
@@ -33,7 +27,7 @@ class UsersController extends Controller
 
         return response()->json([
             'message' => 'Usuário registrado com sucesso!',
-            'user' => $user,
+            'user' => new UserResource($user),
             'token' => $token,
         ]);
     }

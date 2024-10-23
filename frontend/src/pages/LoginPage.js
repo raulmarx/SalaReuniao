@@ -23,7 +23,7 @@ const LoginPage = () => {
 
       dispatch(login({ user: response.data.user, token: response.data.token }));
       
-      navigate('/dashboard');
+      navigate('/dashboard/rooms');
     } catch (err) {
       setError('Erro ao fazer login. Verifique suas credenciais.');
     }

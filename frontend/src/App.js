@@ -8,40 +8,9 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Rota pública: login */}
         <Route path="/" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/dashboard/*" element={<Dashboard />} />
-
-        {/* Rotas protegidas: só acessíveis se o usuário estiver autenticado */}
-        {/* <Route
-          path="/dashboard"
-          element={
-            <PrivateRoute>
-              <Dashboard />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/reservas"
-          element={
-            <PrivateRoute>
-              <ReserveRoom />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/minhas-reservas"
-          element={
-            <PrivateRoute>
-              <MyReservations />
-            </PrivateRoute>
-          }
-        /> */}
-
-        {/* Defina outras rotas conforme necessário */}
       </Routes>
     </Router>
   );

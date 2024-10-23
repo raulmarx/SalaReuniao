@@ -19,7 +19,7 @@ class RoomController extends Controller
 
     public function index()
     {
-        $rooms = $this->roomRepository->all()->whereNotIn('user_id', [Auth::id()]);
+        $rooms = $this->roomRepository->all()->where('user_id', Auth::id());
         return RoomResource::collection($rooms);
     }
 
@@ -58,5 +58,12 @@ class RoomController extends Controller
 
         $this->roomRepository->delete($room);
         return response()->json(null, 204);
+    }
+
+    public function roomsNotInUser()
+    {
+        $rooms = $this->roomRepository->all()->whereNotIn('user_id', [Auth::id()])
+        ->load('reserves');
+        return RoomResource::collection($rooms);
     }
 }

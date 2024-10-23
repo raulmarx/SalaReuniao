@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getReserves, createReserve, updateReserve, deleteReserve } from '../services/api';
+import ReserveModal from '../components/ReserveModal';
 
 const ReservesPage = () => {
     const [reserves, setReserves] = useState([]);
@@ -83,65 +84,30 @@ const ReservesPage = () => {
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                         {reserves.map((reserve) => (
-                            <tr key={reserve.id} className={`hover:bg-gray-100 border-b border-gray-300 ${reserve.status === 'cancelado' ? 'opacity-50 pointer-events-none' : ''}`}>
+                            <tr key={reserve.id} className={`hover:bg-gray-100 border-b border-gray-300 ${reserve.status === 'cancelado' || new Date(reserve.end_reservation) < new Date() ? 'opacity-50 pointer-events-none' : ''}`}>
                                 <td className="px-6 py-4 whitespace-nowrap">{reserve.room.name}</td>
                                 <td className="px-6 py-4 whitespace-nowrap">{reserve.responsible}</td>
                                 <td className="px-6 py-4 whitespace-nowrap">{reserve.start_reservation}</td>
                                 <td className="px-6 py-4 whitespace-nowrap">{reserve.end_reservation}</td>
                                 <td className="px-6 py-4 whitespace-nowrap">{reserve.status}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <button onClick={() => handleEditReserve(reserve)} className="bg-yellow-500 text-white py-1 px-2 rounded ml-2 hover:bg-yellow-600 transition duration-200" disabled={reserve.status === 'cancelado'}>Editar</button>
-                                    <button onClick={() => handleDeleteReserve(reserve.id)} className="bg-red-500 text-white py-1 px-2 rounded ml-2 hover:bg-red-600 transition duration-200" disabled={reserve.status === 'cancelado'}>Cancelar</button>
+                                    <button onClick={() => handleEditReserve(reserve)} className="bg-yellow-500 text-white py-1 px-2 rounded ml-2 hover:bg-yellow-600 transition duration-200" disabled={reserve.status === 'cancelado' || new Date(reserve.end_reservation) < new Date()}>Editar</button>
+                                    <button onClick={() => handleDeleteReserve(reserve.id)} className="bg-red-500 text-white py-1 px-2 rounded ml-2 hover:bg-red-600 transition duration-200" disabled={reserve.status === 'cancelado' || new Date(reserve.end_reservation) < new Date()}>Cancelar</button>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             ) : (
-                <p className="text-center">N&atilde;o h&aacute; reservas dispon&iacute;veis.</p>
+                <p className="text-center">Não há reservas disponíveis.</p>
             )}
 
-            {isModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-                    <div className="bg-white rounded-lg p-6 w-1/3 shadow-lg">
-                        <h2 className="text-xl font-bold mb-4">{isEditing ? 'Editar Reserva' : 'Nova Reserva'}</h2>
-                        <input
-                            type="text"
-                            value={newReserve.responsible}
-                            onChange={(e) => setNewReserve({ ...newReserve, responsible: e.target.value })}
-                            placeholder="Responsavel"
-                            className="border border-gray-300 rounded p-2 w-full mb-2"
-                        />
-                        <input
-                            type="datetime-local"
-                            value={newReserve.start_reservation}
-                            onChange={(e) => setNewReserve({ ...newReserve, start_reservation: e.target.value })}
-                            placeholder="Data e Hora de Início"
-                            className="border border-gray-300 rounded p-2 w-full mb-2"
-                        />
-                        <input
-                            type="datetime-local"
-                            value={newReserve.end_reservation}
-                            onChange={(e) => setNewReserve({ ...newReserve, end_reservation: e.target.value })}
-                            placeholder="Data e Hora de Término"
-                            className="border border-gray-300 rounded p-2 w-full mb-2"
-                        />
-                        <div className="flex justify-end">
-                            <button
-                                onClick={handleCreateOrUpdateReserve}
-                                className="bg-blue-500 text-white py-2 px-4 rounded mr-2 hover:bg-blue-600 transition duration-200"
-                            >
-                                {isEditing ? 'Atualizar' : 'Salvar'}
-                            </button>
-                            <button
-                                onClick={() => setIsModalOpen(false)}
-                                className="bg-gray-300 text-black py-2 px-4 rounded hover:bg-gray-400 transition duration-200"
-                            >
-                                Cancelar
-                            </button>
-                        </div>
-                    </div>
-                </div>
+            {isModalOpen && (                
+                <ReserveModal
+                    reserve={[newReserve,'']}
+                    onSave={handleCreateOrUpdateReserve}
+                    onClose={() => setIsModalOpen(false)}
+                />
             )}
         </div>
     );

@@ -13,6 +13,7 @@ Route::post('login', [UsersController::class, 'login'])->name('login');
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [UsersController::class, 'logout'])->name('logout');
     Route::get('me', [UsersController::class, 'me'])->name('me');
+    Route::get('roomsnotinuser', [RoomController::class, 'roomsNotInUser'])->name('roomsnotinuser');
     Route::apiResource('rooms', RoomController::class);
     Route::apiResource('reserves', ReserveController::class);
     

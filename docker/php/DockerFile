@@ -48,6 +48,7 @@ COPY --chown=www:www . /var/www
 RUN chown -R www-data:www-data /var/www/application
 RUN chmod -R 777 /var/www/application
 
+RUN composer install 
 # Change current user to www
 USER www
 

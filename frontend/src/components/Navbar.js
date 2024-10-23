@@ -26,6 +26,7 @@ const Navbar = () => {
         <div className="flex space-x-4">
           <Link to="/dashboard/rooms" className="hover:text-gray-400">Salas</Link>
           <Link to="/dashboard/reserves" className="hover:text-gray-400">Reservas</Link>
+          <Link to="/dashboard/myrooms" className="hover:text-gray-400">Minhas Salas</Link>
         </div>
         <button 
           onClick={handleLogout}

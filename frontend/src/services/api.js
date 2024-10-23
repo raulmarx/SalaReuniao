@@ -3,21 +3,32 @@ import axios from 'axios';
 const API = axios.create({ baseURL: 'http://localhost:8000/api' });
 
 API.interceptors.request.use((req) => {
-    const token = localStorage.getItem('token');
-    
-    if (token) {
-      req.headers.Authorization = `Bearer ${token}`;
+  const token = localStorage.getItem('token');
+
+  if (token) {
+    req.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return req;
+});
+
+API.interceptors.response.use(
+  response => response,
+  error => {
+
+    if (error.response && error.response.status === 401) {
+      window.location.href = '/'; 
     }
-  
-    return req;
-  });
-  
+    return Promise.reject(error);
+  }
+);
 
 export const login = (data) => API.post('/login', data);
 export const register = (data) => API.post('/register', data);
 export const logout = (data, config) => API.post('/logout', data, config);
 
 export const getRooms = () => API.get('/rooms');
+export const getRoomsNotInUser = () => API.get('/roomsnotinuser');
 export const createRoom = (data) => API.post('/rooms', data);
 export const updateRoom = (id, data) => API.put(`/rooms/${id}`, data);
 export const deleteRoom = (id) => API.delete(`/rooms/${id}`);
