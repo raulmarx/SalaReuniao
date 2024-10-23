@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 
 const RoomModal = ({ room, onUpdate, onClose }) => {
-    const [roomName, setRoomName] = useState(room.name);
+    const [updatedRoom, setUpdatedRoom] = useState(room);
 
-    const handleUpdate = () => {
-        if (roomName.trim()) {
-            onUpdate({ ...room, name: roomName });
-        }
+    const handleChange = (e) => {
+        setUpdatedRoom({ ...updatedRoom, name: e.target.value });
     };
 
     return (
@@ -15,23 +13,22 @@ const RoomModal = ({ room, onUpdate, onClose }) => {
                 <h2 className="text-xl font-bold mb-4">Editar Sala</h2>
                 <input
                     type="text"
-                    value={roomName}
-                    onChange={(e) => setRoomName(e.target.value)}
-                    placeholder="Nome da sala"
-                    className="border border-gray-300 rounded p-2 w-full mb-4"
+                    value={updatedRoom.name}
+                    onChange={handleChange}
+                    className="border border-gray-300 p-2 rounded w-full mb-4"
                 />
                 <div className="flex justify-end">
                     <button
-                        onClick={handleUpdate}
-                        className="bg-blue-500 text-white py-2 px-4 rounded mr-2 hover:bg-blue-600 transition duration-200"
-                    >
-                        Atualizar
-                    </button>
-                    <button
                         onClick={onClose}
-                        className="bg-gray-300 text-black py-2 px-4 rounded hover:bg-gray-400 transition duration-200"
+                        className="bg-gray-500 text-white py-2 px-4 rounded mr-2"
                     >
                         Cancelar
+                    </button>
+                    <button
+                        onClick={() => onUpdate(updatedRoom)}
+                        className="bg-blue-500 text-white py-2 px-4 rounded"
+                    >
+                        Salvar
                     </button>
                 </div>
             </div>

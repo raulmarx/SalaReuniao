@@ -29,7 +29,7 @@ const ReserveModal = ({ reserve, onSave, onClose }) => {
 
     return (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-            <div className="bg-white rounded-lg p-6 w-1/3 shadow-lg">
+            <div className="bg-white rounded-lg p-6 md:max-w-lg w-full shadow-lg">
                 <h2 className="text-xl font-bold mb-4">Nova Reserva</h2>
                 {error && <div className="text-red-500 mb-2">{error}</div>}
                 <input
@@ -52,9 +52,9 @@ const ReserveModal = ({ reserve, onSave, onClose }) => {
                     className="border border-gray-300 rounded p-2 w-full mb-2"
                 />
                 {newRooms && newRooms.map((room) => (
-                    <div key={room.id} className="mb-4">
+                    <div key={room.id} className="mb-4 md:mb-8">
                         <div className="bg-gray-100 rounded-lg p-2 shadow-md">
-                            <ul className="list-disc">
+                            <ul className="list-disc md:max-h-48 overflow-y-auto">
                                 {room.reserves.filter(reserve => reserve.status === 'reservado' && new Date(reserve.end_reservation) >= new Date()).map((reserve) => (
                                     <li key={reserve.id} className="flex justify-between">
                                         <span>{reserve.status}</span>

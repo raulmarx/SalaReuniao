@@ -58,31 +58,33 @@ const RoomsPage = () => {
                 <p>Carregando...</p>
             ) : (
                 rooms.length > 0 ? (
-                    <table className="w-full bg-white rounded-lg shadow-md divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-                            <tr>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome da Sala</th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200">
-                            {rooms.map((room) => (
-                                <tr key={room.id} className="hover:bg-gray-100">
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="text-sm font-medium text-gray-900">{room.name}</div>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <button
-                                            onClick={() => handleOpenModal(room.id)}
-                                            className="bg-blue-500 text-white py-1 px-2 rounded hover:bg-blue-600 transition duration-200"
-                                        >
-                                            Nova Reserva
-                                        </button>                                        
-                                    </td>
+                    <div className="overflow-x-auto rounded-lg shadow-md">
+                        <table className="min-w-full bg-white rounded-lg divide-y divide-gray-200">
+                            <thead className="bg-gray-50">
+                                <tr>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome da Sala</th>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody className="divide-y divide-gray-200">
+                                {rooms.map((room) => (
+                                    <tr key={room.id} className="hover:bg-gray-100">
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="text-sm font-medium text-gray-900">{room.name}</div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <button
+                                                onClick={() => handleOpenModal(room.id)}
+                                                className="bg-blue-500 text-white py-1 px-2 rounded hover:bg-blue-600 transition duration-200"
+                                            >
+                                                Nova Reserva
+                                            </button>                                        
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 ) : (
                     <p>Não há salas disponíveis.</p>
                 )

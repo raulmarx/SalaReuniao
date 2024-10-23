@@ -5,7 +5,7 @@ import RoomModal from '../components/RoomModal';
 const MyRoomsPage = () => {
     const [rooms, setRooms] = useState([]);
     const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(false); 
+    const [loading, setLoading] = useState(false);
     const [newRoomName, setNewRoomName] = useState('');
     const [editRoom, setEditRoom] = useState(null);
 
@@ -56,17 +56,17 @@ const MyRoomsPage = () => {
     };
 
     const handleEditRoom = (room) => {
-        setEditRoom(room); 
+        setEditRoom(room);
     };
 
-    const handleUpdateRoom = async () => {
-        if (!editRoom.name) return;
+    const handleUpdateRoom = async (updatedRoom) => {
+        if (!updatedRoom.name) return;
         try {
-            const response = await updateRoom(editRoom.id, { name: editRoom.name });
+            const response = await updateRoom(updatedRoom.id, { name: updatedRoom.name });
             setRooms((prevRooms) =>
-                prevRooms.map((room) => (room.id === editRoom.id ? response.data.data : room))
+                prevRooms.map((room) => (room.id === updatedRoom.id ? response.data.data : room))
             );
-            setEditRoom(null); 
+            setEditRoom(null);
         } catch (error) {
             setError(error.message);
         }
@@ -95,37 +95,39 @@ const MyRoomsPage = () => {
                 <p>Carregando...</p>
             ) : (
                 rooms.length > 0 ? (
-                    <table className="min-w-full bg-white rounded-lg shadow-md divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-                            <tr>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome da Sala</th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200">
-                            {rooms.map((room) => (
-                                <tr key={room.id} className="hover:bg-gray-100">
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="text-sm font-medium text-gray-900">{room.name}</div>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <button
-                                            onClick={() => handleEditRoom(room)}
-                                            className="bg-yellow-500 text-white py-1 px-2 rounded ml-2 hover:bg-yellow-600 transition duration-200"
-                                        >
-                                            Editar
-                                        </button>
-                                        <button
-                                            onClick={() => handleDeleteRoom(room.id)}
-                                            className="bg-red-500 text-white py-1 px-2 rounded ml-2 hover:bg-red-600 transition duration-200"
-                                        >
-                                            Excluir
-                                        </button>
-                                    </td>
+                    <div className="overflow-x-auto rounded-lg shadow-md">
+                        <table className="min-w-full bg-white rounded-lg shadow-md divide-y divide-gray-200">
+                            <thead className="bg-gray-50">
+                                <tr>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome da Sala</th>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody className="divide-y divide-gray-200">
+                                {rooms.map((room) => (
+                                    <tr key={room.id} className="hover:bg-gray-100">
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="text-sm font-medium text-gray-900">{room.name}</div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <button
+                                                onClick={() => handleEditRoom(room)}
+                                                className="bg-yellow-500 text-white py-1 px-2 rounded ml-2 hover:bg-yellow-600 transition duration-200"
+                                            >
+                                                Editar
+                                            </button>
+                                            <button
+                                                onClick={() => handleDeleteRoom(room.id)}
+                                                className="bg-red-500 text-white py-1 px-2 rounded ml-2 hover:bg-red-600 transition duration-200"
+                                            >
+                                                Excluir
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 ) : (
                     <p>Não há salas disponíveis.</p>
                 )
@@ -136,7 +138,7 @@ const MyRoomsPage = () => {
                     onUpdate={handleUpdateRoom}
                     onClose={() => setEditRoom(null)}
                 />
-            )}            
+            )}
         </div>
     );
 };
