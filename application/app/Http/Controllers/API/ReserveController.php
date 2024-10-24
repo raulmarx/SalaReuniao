@@ -31,8 +31,9 @@ class ReserveController extends Controller
         if ($room->user_id === Auth::id()) {
             return response()->json(['error' => 'Você não pode reserver sua própria room.'], 403);
         }
-
-        if ($request->start_reservation < now()) {
+        
+        $now = now('America/Sao_Paulo');
+        if ($request->start_reservation < $now) {
             return response()->json(['error' => 'A data e hora de início da reserva devem ser futuras.'], 400);
         }
 

@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const ReserveModal = ({ reserve, onSave, onClose }) => {
     const [newReserve, setNewReserve] = useState(reserve[0]);
     const [newRooms, setNewRooms] = useState(reserve[1]);
     const [error, setError] = useState('');
+
+    useEffect(() => {
+        setNewReserve(reserve[0]);
+    }, [reserve]);
 
     const handleSave = () => {
         const { room_id, responsible, start_reservation, end_reservation } = newReserve;
@@ -22,7 +26,6 @@ const ReserveModal = ({ reserve, onSave, onClose }) => {
             setError('A data de Início deve ser maior que à data atual.');
             return;
         }
-
         setError('');
         onSave(newReserve);
     };
@@ -67,7 +70,7 @@ const ReserveModal = ({ reserve, onSave, onClose }) => {
                 ))}
                 <div className="flex justify-end">
                     <button
-                        onClick={handleSave}
+                        onClick={() => handleSave(newReserve)}
                         className="bg-blue-500 text-white py-2 px-4 rounded mr-2 hover:bg-blue-600 transition duration-200"
                     >
                         Salvar
